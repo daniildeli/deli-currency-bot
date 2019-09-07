@@ -37,15 +37,15 @@ function defaultReply(chatId) {
       inline_keyboard: [
         [
           {
-            text: 'EUR',
+            text: '€ - EUR',
             callback_data: currencyCodes.EUR
           },
           {
-            text: 'USD',
+            text: '$ - USD',
             callback_data: currencyCodes.USD
           },
           {
-            text: 'RUB',
+            text: '₽ - RUB',
             callback_data: currencyCodes.RUB
           }
         ]
