@@ -35,12 +35,7 @@ function defaultReply(chatId) {
     }
   });
 }
-bot.onText(/\/curse/, (msg, match) => {
-  const chatId = msg.chat.id;
-  defaultReply(chatId);
-});
-bot.on('callback_query', query => {
-  const id = query.message.chat.id;
+function monobankRequest(query, id) {
   request(`https://api.monobank.ua//bank/currency`, function(err, response, body) {
     const result = JSON.parse(body).filter(item => +item.currencyCodeA === +query.data)[0];
     const message = `
@@ -51,4 +46,12 @@ bot.on('callback_query', query => {
     bot.sendMessage(id, message, {parse_mode: 'Markdown'});
     defaultReply(id);
   })  
+}
+bot.onText(/\/curse/, (msg, match) => {
+  const chatId = msg.chat.id;
+  defaultReply(chatId);
+});
+bot.on('callback_query', query => {
+  const id = query.message.chat.id;
+  monobankRequest(query, id);
 })
