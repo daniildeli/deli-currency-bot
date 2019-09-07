@@ -14,14 +14,13 @@ const bot = new TelegramBot(token, options);
 bot.setWebHook(`${url}/bot${token}`);
 
 const currencyCodes = {
-  UAH: 980,
-  USD: 840,
-  EUR: 978,
-  RUB: 643,
-  '980': {name: 'UAH', emoji: '🇺🇦'},
-  '840': {name: 'USD', emoji: '🇺🇸'},
-  '978': {name: 'EUR', emoji: '🇪🇺'},
-  '643': {name: 'RUB', emoji: '🇷🇺'}
+  UAH: {code: 980, emoji: '🇺🇦'},
+  USD: {code: 840, emoji: '🇺🇸'},
+  EUR: {code: 978, emoji: '🇪🇺'},
+  RUB: {code: 643, emoji: '🇷🇺'}
+}
+function getKeyByValue(value) {
+  return Object.keys(currencyCodes).find(key => currencyCodes[key].code === +value);
 }
 function defaultReply(chatId) {
   bot.sendMessage(chatId, 'Choose currency', {
@@ -30,15 +29,15 @@ function defaultReply(chatId) {
         [
           {
             text: '€ - EUR',
-            callback_data: currencyCodes.EUR
+            callback_data: currencyCodes.EUR.code
           },
           {
             text: '$ - USD',
-            callback_data: currencyCodes.USD
+            callback_data: currencyCodes.USD.code
           },
           {
             text: '₽ - RUB',
-            callback_data: currencyCodes.RUB
+            callback_data: currencyCodes.RUB.code
           }
         ]
       ]
@@ -48,8 +47,10 @@ function defaultReply(chatId) {
 function monobankRequest(query, id) {
   request(`https://api.monobank.ua//bank/currency`, function(err, response, body) {
     const result = JSON.parse(body).filter(item => +item.currencyCodeA === +query.data)[0];
+    const currencyA = getKeyByValue(result.currencyCodeA);
+    const currencyB = getKeyByValue(result.currencyCodeB);
     const message = `
-      *${currencyCodes[`${result.currencyCodeA}`].name} ${currencyCodes[`${result.currencyCodeA}`].emoji} 💱 ${currencyCodes[`${result.currencyCodeB}`].name} ${currencyCodes[`${result.currencyCodeB}`].emoji}*
+      *${currencyA} ${currencyCodes[currencyA].emoji} 💱 ${currencyB} ${currencyCodes[currencyB].emoji}*
       Buy: __${result.rateBuy}__
       Sale: __${result.rateSell}__
     `;
