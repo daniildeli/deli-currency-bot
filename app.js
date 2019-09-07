@@ -3,24 +3,13 @@ const token = '858677831:AAEEm7cbSy5GV4J5Lr4ljagwXjAl3qMLQ-U';
 
 const request = require('request');
 
-const port = process.env.port;
+const port = process.env.port || 443;
+const externalUrl = 'https://deli-test-bot.herokuapp.com/';
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const bot = new TelegramBot(token);
-bot.setWebHook(`https://deli-test-bot.herokuapp.com/bot${token}`);
-const app = express();
-app.use(bodyParser.json());
-
-app.post(`/bot${token}`, (req, res) => {
-  bot.processUpdate(req.body);
-  res.sendStatus(200);
-});
-
-// Start Express Server
-app.listen(port, () => {
-  console.log(`Express server is listening on ${port}`);
-});
+const bot = new TelegramBot(token, {webHook: {port: port, host: '0.0.0.0' }});
+bot.setWebHook(externalUrl + ':443/bot' + token);
 
 const currencyCodes = {
   UAH: 980,
