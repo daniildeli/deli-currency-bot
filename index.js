@@ -1,14 +1,13 @@
 const TelegramBot = require('node-telegram-bot-api');
-const token = '858677831:AAEEm7cbSy5GV4J5Lr4ljagwXjAl3qMLQ-U';
-
 const request = require('request');
 
+const token = '858677831:AAEEm7cbSy5GV4J5Lr4ljagwXjAl3qMLQ-U';
+const url = process.env.APP_URL || 'https://deli-test-bot.herokuapp.com:443';
 const options = {
   webHook: {
     port: process.env.PORT,
   },
 };
-const url = process.env.APP_URL || 'https://deli-test-bot.herokuapp.com:443';
 
 const bot = new TelegramBot(token, options);
 bot.setWebHook(`${url}/bot${token}`);
