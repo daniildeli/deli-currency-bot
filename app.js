@@ -63,18 +63,7 @@ function monobankRequest(query, id) {
     `;
     bot.sendMessage(id, message, {parse_mode: 'Markdown'});
     setTimeout(() => {
-      bot.sendMessage(chatId, 'Choose currency', {
-        reply_markup: {
-          inline_keyboard: [
-            [
-              {
-                text: 'Other currency',
-                callback_data: 'start over'
-              }
-            ]
-          ]
-        }
-      });
+      defaultReply(id);
     }, 1)
   })  
 }
@@ -84,9 +73,5 @@ bot.onText(/\/curse/, (msg, match) => {
 });
 bot.on('callback_query', query => {
   const id = query.message.chat.id;
-  if (query.data === 'start over') {
-    defaultReply(id);
-  } else {
-    monobankRequest(query, id);
-  }
+  monobankRequest(query, id);
 })
