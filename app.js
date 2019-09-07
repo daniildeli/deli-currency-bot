@@ -1,7 +1,27 @@
 const TelegramBot = require('node-telegram-bot-api');
 const token = '858677831:AAEEm7cbSy5GV4J5Lr4ljagwXjAl3qMLQ-U';
-const bot = new TelegramBot(token, { polling: true });
+
 const request = require('request');
+
+const port = process.env.port;
+const express = require('express');
+const bodyParser = require('body-parser');
+
+const bot = new TelegramBot(token);
+bot.setWebHook(`https://deli-test-bot.herokuapp.com/bot${token}`);
+const app = express();
+app.use(bodyParser.json());
+
+app.post(`/bot${token}`, (req, res) => {
+  bot.processUpdate(req.body);
+  res.sendStatus(200);
+});
+
+// Start Express Server
+app.listen(port, () => {
+  console.log(`Express server is listening on ${port}`);
+});
+
 const currencyCodes = {
   UAH: 980,
   USD: 840,
@@ -12,9 +32,12 @@ const currencyCodes = {
   '978': {name: 'EUR', emoji: '🇪🇺'},
   '643': {name: 'RUB', emoji: '🇷🇺'}
 }
-require('http').createServer().listen(process.env.PORT || 5000).on('request', function(req, res){
-  res.end('')
-})
+
+
+
+// require('http').createServer().listen(process.env.PORT || 5000).on('request', function(req, res){
+//   res.end('')
+// })
 
 function defaultReply(chatId) {
   bot.sendMessage(chatId, 'Choose currency', {
