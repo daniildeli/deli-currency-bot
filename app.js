@@ -30,47 +30,19 @@ function defaultReply(chatId) {
             text: 'RUB',
             callback_data: currencyCodes.RUB
           }
-          // {
-          //   text: 'BTC',
-          //   callback_data: 'BTC'
-          // }
         ]
       ]
     }
   });
 }
-
-
 bot.onText(/\/curse/, (msg, match) => {
   const chatId = msg.chat.id;
   defaultReply(chatId);
 });
-
 bot.on('callback_query', query => {
   const id = query.message.chat.id;
-
-  // ------ PrivatBank API ------------
-
-  // const date = new Date();
-  // const day = date.getDate() > 9 ? date.getDate() : `0${date.getDate()}`
-  // const month = date.getMonth() + 1 > 9 ? date.getMonth() : `0${date.getMonth()}`
-  // request(`https://api.privatbank.ua/p24api/exchange_rates?json&date=${day}.${month}.${date.getFullYear()}`, function(err, response, body) {
-  //   const data = JSON.parse(body);
-  //   const result = data.exchangeRate.filter(item => item.currency === query.data)[0]
-  //   console.log(result);
-  //   const message = `
-  //     *${result.currency} => ${result.baseCurrency}*
-  //     Buy: __${result.purchaseRate}__
-  //     Sale: __${result.saleRate}__
-  //   `;
-  //   bot.sendMessage(id, message, {parse_mode: 'Markdown'});
-  // })
-
-  // ----------- MonoBank API -----------
   request(`https://api.monobank.ua//bank/currency`, function(err, response, body) {
-    const data = JSON.parse(body);
-    const result = data.filter(item => +item.currencyCodeA === +query.data)[0];
-    // console.log(result, query.data)
+    const result = JSON.parse(body).filter(item => +item.currencyCodeA === +query.data)[0];
     const message = `
       *${currencyCodes[`${result.currencyCodeA}`].name} ${currencyCodes[`${result.currencyCodeA}`].emoji} 💱 ${currencyCodes[`${result.currencyCodeB}`].name} ${currencyCodes[`${result.currencyCodeB}`].emoji}*
       Buy: __${result.rateBuy}__
@@ -80,10 +52,3 @@ bot.on('callback_query', query => {
     defaultReply(id);
   })  
 })
-
-// bot.on('message', (msg) => {
-//   const chatId = msg.chat.id;
-
-//   // send a message to the chat acknowledging receipt of their message
-//   bot.sendMessage(chatId, 'Received your message');
-// });
