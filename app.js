@@ -19,8 +19,8 @@ const currencyCodes = {
   EUR: {code: 978, emoji: '🇪🇺'},
   RUB: {code: 643, emoji: '🇷🇺'}
 }
-function getKeyByValue(value) {
-  return Object.keys(currencyCodes).find(key => currencyCodes[key].code === +value);
+function getTitleByCode(value) {
+  return Object.keys(currencyCodes).find(key => currencyCodes[key].code === +value) || 'Unknown currency';
 }
 function defaultReply(chatId) {
   bot.sendMessage(chatId, 'Choose currency', {
@@ -47,8 +47,8 @@ function defaultReply(chatId) {
 function monobankRequest(query, id) {
   request(`https://api.monobank.ua//bank/currency`, function(err, response, body) {
     const result = JSON.parse(body).filter(item => +item.currencyCodeA === +query.data)[0];
-    const currencyA = getKeyByValue(result.currencyCodeA);
-    const currencyB = getKeyByValue(result.currencyCodeB);
+    const currencyA = getTitleByCode(result.currencyCodeA);
+    const currencyB = getTitleByCode(result.currencyCodeB);
     const message = `
       *${currencyA} ${currencyCodes[currencyA].emoji} 💱 ${currencyB} ${currencyCodes[currencyB].emoji}*
       Buy: __${result.rateBuy}__
