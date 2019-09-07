@@ -12,6 +12,9 @@ const currencyCodes = {
   '978': {name: 'EUR', emoji: '🇪🇺'},
   '643': {name: 'RUB', emoji: '🇷🇺'}
 }
+require('http').createServer().listen(process.env.PORT || 5000).on('request', function(req, res){
+  res.end('')
+})
 
 function defaultReply(chatId) {
   bot.sendMessage(chatId, 'Choose currency', {
