@@ -47,7 +47,7 @@ function monobankRequest(query, id) {
       Sale: __${result.rateSell}__
     `;
     bot.sendMessage(id, message, {parse_mode: 'Markdown'});
-    setTimeout(defaultReply(id), 1);
+    defaultReply(id);
   })  
 }
 bot.onText(/\/curse/, (msg, match) => {
