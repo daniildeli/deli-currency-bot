@@ -13,9 +13,7 @@ const currencyCodes = {
   '643': {name: 'RUB', emoji: '🇷🇺'}
 }
 
-
-bot.onText(/\/curse/, (msg, match) => {
-  const chatId = msg.chat.id;
+function defaultReply(chatId) {
   bot.sendMessage(chatId, 'Choose currency', {
     reply_markup: {
       inline_keyboard: [
@@ -40,10 +38,15 @@ bot.onText(/\/curse/, (msg, match) => {
       ]
     }
   });
+}
+
+
+bot.onText(/\/curse/, (msg, match) => {
+  const chatId = msg.chat.id;
+  defaultReply(chatId);
 });
 
 bot.on('callback_query', query => {
-  console.log(query);
   const id = query.message.chat.id;
 
   // ------ PrivatBank API ------------
@@ -74,6 +77,7 @@ bot.on('callback_query', query => {
       Sale: __${result.rateSell}__
     `;
     bot.sendMessage(id, message, {parse_mode: 'Markdown'});
+    defaultReply(id);
   })  
 })
 
