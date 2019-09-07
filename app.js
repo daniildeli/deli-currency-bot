@@ -3,15 +3,16 @@ const token = '858677831:AAEEm7cbSy5GV4J5Lr4ljagwXjAl3qMLQ-U';
 
 const request = require('request');
 
+const options = {
+  webHook: {
+    port: process.env.PORT,
+  },
+};
+const url = process.env.APP_URL || 'https://deli-test-bot.herokuapp.com:443';
 
-const bot = new TelegramBot(token, {
-  workers: 1,
-  webhook: {
-      url: process.env.WEBHOOK_URL,
-      port: process.env.PORT || 3000,
-      host: process.env.WEBHOOK_HOST || 'localhost'
-  }
-});
+
+const bot = new TelegramBot(token, options);
+bot.setWebHook(`${url}/bot${token}`);
 
 const currencyCodes = {
   UAH: 980,
