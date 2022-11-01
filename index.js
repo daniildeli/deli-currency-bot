@@ -13,38 +13,33 @@ const bot = new TelegramBot(token, options);
 bot.setWebHook(`${url}/bot${token}`);
 
 const currencyCodes = {
-  UAH: {code: 980, emoji: '🇺🇦'},
-  USD: {code: 840, emoji: '🇺🇸'},
-  EUR: {code: 978, emoji: '🇪🇺'},
-  RUB: {code: 643, emoji: '🇷🇺'}
-}
+  UAH: { code: 980, emoji: '🇺🇦', },
+  USD: { code: 840, emoji: '🇺🇸', },
+  EUR: { code: 978, emoji: '🇪🇺', },
+};
 function getTitleByCode(value) {
   return Object.keys(currencyCodes).find(key => currencyCodes[key].code === +value) || 'Unknown currency';
 }
-function defaultReply(chatId) {
-  bot.sendMessage(chatId, 'Choose currency', {
+async function defaultReply(chatId) {
+  await bot.sendMessage(chatId, 'Choose currency', {
     reply_markup: {
       inline_keyboard: [
         [
           {
             text: '€ - EUR',
-            callback_data: currencyCodes.EUR.code
+            callback_data: currencyCodes.EUR.code,
           },
           {
             text: '$ - USD',
-            callback_data: currencyCodes.USD.code
-          },
-          {
-            text: '₽ - RUB',
-            callback_data: currencyCodes.RUB.code
+            callback_data: currencyCodes.USD.code,
           }
         ]
-      ]
-    }
+      ],
+    },
   });
 }
 function monobankRequest(query, id) {
-  request(`https://api.monobank.ua//bank/currency`, function(err, response, body) {
+  request('https://api.monobank.ua/bank/currency', async function(err, response, body) {
     const result = JSON.parse(body).filter(item => +item.currencyCodeA === +query.data)[0];
     const currencyA = getTitleByCode(result.currencyCodeA);
     const currencyB = getTitleByCode(result.currencyCodeB);
@@ -53,17 +48,15 @@ function monobankRequest(query, id) {
       Buy: __${result.rateBuy}__
       Sale: __${result.rateSell}__
     `;
-    bot.sendMessage(id, message, {parse_mode: 'Markdown'});
-    setTimeout(() => {
-      defaultReply(id);
-    }, 1)
-  })  
+    await bot.sendMessage(id, message, { parse_mode: 'Markdown', });
+    await defaultReply(id);
+  });
 }
-bot.onText(/\/curse/, (msg, match) => {
+bot.onText(/\/curse/, async msg => {
   const chatId = msg.chat.id;
-  defaultReply(chatId);
+  await defaultReply(chatId);
 });
 bot.on('callback_query', query => {
   const id = query.message.chat.id;
   monobankRequest(query, id);
-})
+});
