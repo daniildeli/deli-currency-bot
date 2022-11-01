@@ -1,16 +1,23 @@
 const TelegramBot = require('node-telegram-bot-api');
 const request = require('request');
+const { BOT_TOKEN, APP_URL, } = process.env;
 
-const token = '858677831:AAEEm7cbSy5GV4J5Lr4ljagwXjAl3qMLQ-U';
-const url = process.env.APP_URL || 'https://deli-test-bot.herokuapp.com:443';
+if (!BOT_TOKEN) {
+  throw new Error('Please provide a correct bot token');
+}
+
+if (!APP_URL) {
+  throw new Error('Please provide a correct app url');
+}
+
 const options = {
   webHook: {
     port: process.env.PORT,
   },
 };
 
-const bot = new TelegramBot(token, options);
-bot.setWebHook(`${url}/bot${token}`);
+const bot = new TelegramBot(BOT_TOKEN, options);
+bot.setWebHook(`${APP_URL}/bot${BOT_TOKEN}`);
 
 const currencyCodes = {
   UAH: { code: 980, emoji: '🇺🇦', },
