@@ -1,6 +1,6 @@
 const TelegramBot = require('node-telegram-bot-api');
 const request = require('request');
-const { BOT_TOKEN, APP_URL, } = process.env;
+const { BOT_TOKEN, APP_URL, PORT, } = process.env;
 
 if (!BOT_TOKEN) {
   throw new Error('Please provide a correct bot token');
@@ -12,7 +12,7 @@ if (!APP_URL) {
 
 const options = {
   webHook: {
-    port: process.env.PORT,
+    port: PORT,
   },
 };
 
